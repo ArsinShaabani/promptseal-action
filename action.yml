@@ -16,9 +16,9 @@ inputs:
     required: false
     default: ''
   install_from:
-    description: '"pypi" or "git" (installs latest main from ArsinShaabani/promptseal).'
+    description: '"pypi" (released package) or "git" (latest main from ArsinShaabani/promptseal).'
     required: false
-    default: 'git'
+    default: 'pypi'
   python_version:
     description: 'Python version for the runner.'
     required: false

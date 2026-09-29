@@ -35,7 +35,7 @@ Your repo needs a `promptseal.yaml` + `cases/` suite and a sealed baseline
 |---|---|---|
 | `provider` | *(config default)* | Provider spec, e.g. `openai:gpt-4o` or `ollama:llama3.1:8b` |
 | `min_pass_rate` | *(config)* | e.g. `0.95` — pass rate below this fails the build |
-| `install_from` | `git` | `pypi` after the PyPI release, or `git` for latest main |
+| `install_from` | `pypi` | `pypi` (released package) or `git` (latest main) |
 | `python_version` | `3.12` | Runner Python version |
 | `working_directory` | `.` | Where `promptseal.yaml` lives (monorepos) |
 
