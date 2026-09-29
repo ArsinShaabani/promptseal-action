@@ -1,0 +1,62 @@
+name: 'PromptSeal CI'
+description: >
+  Gate your LLM changes: run PromptSeal against your eval suite, diff against the
+  sealed baseline, and fail the build when prompt/model behavior regresses.
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  provider:
+    description: 'Provider spec passed to `promptseal ci -p` (e.g. openai:gpt-4o). Empty = use promptseal.yaml default.'
+    required: false
+    default: ''
+  min_pass_rate:
+    description: 'Minimum pass rate, e.g. "0.95". Empty = use ci.min_pass_rate from promptseal.yaml.'
+    required: false
+    default: ''
+  install_from:
+    description: '"pypi" or "git" (installs latest main from ArsinShaabani/promptseal).'
+    required: false
+    default: 'git'
+  python_version:
+    description: 'Python version for the runner.'
+    required: false
+    default: '3.12'
+  working_directory:
+    description: 'Directory containing promptseal.yaml.'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - name: Install PromptSeal
+      shell: bash
+      run: |
+        if [ "${{ inputs.install_from }}" = "pypi" ]; then
+          pip install promptseal
+        else
+          pip install "git+https://github.com/ArsinShaabani/promptseal.git"
+        fi
+
+    - name: Run PromptSeal CI gate
+      shell: bash
+      working-directory: ${{ inputs.working_directory }}
+      env:
+        PS_PROVIDER: ${{ inputs.provider }}
+        PS_MIN_PASS_RATE: ${{ inputs.min_pass_rate }}
+      run: |
+        ARGS=""
+        if [ -n "$PS_PROVIDER" ]; then
+          ARGS="$ARGS -p $PS_PROVIDER"
+        fi
+        if [ -n "$PS_MIN_PASS_RATE" ]; then
+          ARGS="$ARGS --min-pass-rate $PS_MIN_PASS_RATE"
+        fi
+        promptseal ci $ARGS

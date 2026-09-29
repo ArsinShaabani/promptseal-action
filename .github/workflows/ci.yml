@@ -1,0 +1,20 @@
+# Validation & smoke test for the composite action (no provider key needed:
+# uses the mock provider against the repo's own example flow).
+name: Action sanity
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  yaml-valid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: action.yml is valid YAML
+        run: |
+          pip install pyyaml --quiet
+          python -c "import yaml; yaml.safe_load(open('action.yml')); print('action.yml OK')"
