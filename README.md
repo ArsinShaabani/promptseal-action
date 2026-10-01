@@ -38,6 +38,7 @@ Your repo needs a `promptseal.yaml` + `cases/` suite and a sealed baseline
 | `install_from` | `pypi` | `pypi` (released package) or `git` (latest main) |
 | `python_version` | `3.12` | Runner Python version |
 | `working_directory` | `.` | Where `promptseal.yaml` lives (monorepos) |
+| `comment` | `false` | Also post the report as a PR comment (uses the built-in token) |
 
 Pass your provider key through `env` (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, …).
 Ollama/vLLM self-hosted runners need no key.
@@ -59,6 +60,23 @@ The action posts a step summary:
 |---|---|---|
 | ❌ pii-guard | pass | **fail** |
 ```
+
+## PR comments
+
+Set `comment: 'true'` to also post the report as a PR comment — the verdict becomes
+visible right in the conversation, no need to open the step summary:
+
+```yaml
+- uses: ArsinShaabani/promptseal-action@v1
+  with:
+    provider: openai:gpt-4o
+    comment: 'true'
+env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+```
+
+Each run adds a new comment (the report is appended to `$GITHUB_STEP_SUMMARY` and
+posted via `gh`). Keep it off if you prefer summary-only.
 
 ## How baselines work
 

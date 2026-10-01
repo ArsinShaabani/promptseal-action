@@ -33,9 +33,10 @@ jobs:
 |---|---|---|
 | `provider` | *(پیش‌فرض کانفیگ)* | مثلاً `openai:gpt-4o` یا `ollama:llama3.1:8b` |
 | `min_pass_rate` | *(کانفیگ)* | مثل `0.95` — نرخ پاس کمتر از این، بیلد رو fail می‌کنه |
-| `install_from` | `git` | بعد از انتشار PyPI می‌تونی `pypi` بذاری |
+| `install_from` | `pypi` | `pypi` (نسخه‌ی منتشرشده روی PyPI) یا `git` (آخرین main ریپوی promptseal) |
 | `python_version` | `3.12` | نسخه‌ی پایتون رانر |
 | `working_directory` | `.` | محل فایل `promptseal.yaml` (منوریپوها) |
+| `comment` | `false` | گزارش به‌عنوان کامنت PR هم پست بشه (با توکن داخلی) |
 
 کلید provider رو از طریق `env` پاس بده (`OPENAI_API_KEY`، `OPENROUTER_API_KEY` و...).
 برای Ollama/vLLM سلف-هاست کلید لازم نیست.
@@ -49,6 +50,20 @@ promptseal seal -p openai:gpt-4o
 ```
 
 از این به بعد PR ها نسبت به همین رفتار سنجیده می‌شن.
+
+## کامنت روی PR
+
+با `comment: 'true'` گزارش به‌عنوان کامنت PR هم پست می‌شه — نتیجه بدون باز کردن
+step summary، همین‌جا توی گفتگو دیده می‌شه:
+
+```yaml
+- uses: ArsinShaabani/promptseal-action@v1
+  with:
+    provider: openai:gpt-4o
+    comment: 'true'
+```
+
+هر اجرا یک کامنت جدید اضافه می‌کنه؛ اگر summary-only رو ترجیح می‌دی خاموشش بذار.
 
 ## لایسنس
 

@@ -27,6 +27,10 @@ inputs:
     description: 'Directory containing promptseal.yaml.'
     required: false
     default: '.'
+  comment:
+    description: 'Post the PromptSeal report as a PR comment (uses the workflow token; one new comment per run).'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -60,3 +64,17 @@ runs:
           ARGS="$ARGS --min-pass-rate $PS_MIN_PASS_RATE"
         fi
         promptseal ci $ARGS
+
+    - name: Post report as PR comment
+      if: ${{ inputs.comment == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        if [ -z "$PR_NUMBER" ]; then
+          echo "Not a pull_request event — skipping comment."
+          exit 0
+        fi
+        gh pr comment "$PR_NUMBER" --body-file "$GITHUB_STEP_SUMMARY"
