@@ -19,6 +19,10 @@ inputs:
     description: '"pypi" (released package) or "git" (latest main from ArsinShaabani/promptseal).'
     required: false
     default: 'pypi'
+  version:
+    description: 'Pin an exact promptseal release, e.g. "0.7.0". Overrides install_from.'
+    required: false
+    default: ''
   python_version:
     description: 'Python version for the runner.'
     required: false
@@ -43,7 +47,9 @@ runs:
     - name: Install PromptSeal
       shell: bash
       run: |
-        if [ "${{ inputs.install_from }}" = "pypi" ]; then
+        if [ -n "${{ inputs.version }}" ]; then
+          pip install "promptseal==${{ inputs.version }}"
+        elif [ "${{ inputs.install_from }}" = "pypi" ]; then
           pip install promptseal
         else
           pip install "git+https://github.com/ArsinShaabani/promptseal.git"
@@ -66,8 +72,9 @@ runs:
         promptseal ci $ARGS
 
     - name: Post report as PR comment
-      if: ${{ inputs.comment == 'true' }}
+      if: ${{ inputs.comment == 'true' && always() }}
       shell: bash
+      working-directory: ${{ inputs.working_directory }}
       env:
         GH_TOKEN: ${{ github.token }}
         GH_REPO: ${{ github.repository }}
@@ -75,6 +82,10 @@ runs:
       run: |
         if [ -z "$PR_NUMBER" ]; then
           echo "Not a pull_request event — skipping comment."
+          exit 0
+        fi
+        if ! grep -q "PromptSeal" "$GITHUB_STEP_SUMMARY" 2>/dev/null; then
+          echo "No PromptSeal step summary found — skipping comment."
           exit 0
         fi
         gh pr comment "$PR_NUMBER" --body-file "$GITHUB_STEP_SUMMARY"

@@ -18,3 +18,20 @@ jobs:
         run: |
           pip install pyyaml --quiet
           python -c "import yaml; yaml.safe_load(open('action.yml')); print('action.yml OK')"
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build a mock suite and seal a baseline
+        run: |
+          pip install "git+https://github.com/ArsinShaabani/promptseal.git" --quiet
+          mkdir -p demo && cd demo
+          promptseal init
+          promptseal seal
+          git add -f .promptseal/baseline.json
+      - name: Run this action (mock provider, sealed baseline)
+        uses: ./
+        with:
+          working_directory: demo
+          comment: 'false'
