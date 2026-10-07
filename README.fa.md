@@ -35,7 +35,7 @@ jobs:
 | `min_pass_rate` | *(کانفیگ)* | مثل `0.95` — نرخ پاس کمتر از این، بیلد رو fail می‌کنه |
 | `install_from` | `pypi` | `pypi` (نسخه‌ی منتشرشده روی PyPI) یا `git` (آخرین main ریپوی promptseal) |
 | `version` | *(آخرین)* | پین‌کردن نسخه‌ی دقیق، مثل `0.8.0` — بر `install_from` غلبه می‌کنه |
-| `python_version` | `3.12` | نسخه‌ی پایتون رانر |
+| `python_version` | `3.12` | نسخه‌ی پایتون رانر (3.10 تا 3.13) |
 | `working_directory` | `.` | محل فایل `promptseal.yaml` (منوریپوها) |
 | `comment` | `false` | گزارش به‌عنوان کامنت PR هم پست بشه (با توکن داخلی) |
 

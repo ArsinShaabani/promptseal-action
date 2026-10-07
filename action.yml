@@ -44,6 +44,14 @@ runs:
       with:
         python-version: ${{ inputs.python_version }}
 
+    - name: Validate Python version input
+      shell: bash
+      run: |
+        case "${{ inputs.python_version }}" in
+          3.10|3.11|3.12|3.13|'3.10'|'3.11'|'3.12'|'3.13') ;;
+          *) echo "::error::python_version must be 3.10, 3.11, 3.12 or 3.13 (got '${{ inputs.python_version }}'). 3.9 and below are not supported."; exit 1 ;;
+        esac
+
     - name: Install PromptSeal
       shell: bash
       run: |
